@@ -1,2 +1,11 @@
 # Executables
 *.exe
+
+# Ignore all
+*
+
+# Unignore all with extensions
+!*.*
+
+# Unignore all dirs
+!*/
