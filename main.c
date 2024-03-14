@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 // input file to store the file arrgument provided by user
 char *input_file;
@@ -6,6 +7,7 @@ char *input_file;
 // FILE pointer to store the file pointer created by initializer function
 FILE *file_pointer;
 
+int is_ok = EXIT_FAILURE;
 // function declerations
 void initializer(char *);
 
@@ -22,4 +24,10 @@ int main(int arg, char *vargs[])
 void initializer(char *input_file)
 {
     file_pointer = fopen(input_file, "r");
+    // check if file opening failed
+    if (!file_pointer)
+    {
+        perror("File opening failed");
+        return is_ok;
+    }
 }
