@@ -9,7 +9,7 @@ FILE *file_pointer;
 
 int is_ok = EXIT_FAILURE;
 // function declerations
-void initializer(char *);
+int initializer(char *);
 
 int main(int arg, char *vargs[])
 {
@@ -18,10 +18,13 @@ int main(int arg, char *vargs[])
 
     // calling initializer function to open the file for parsing
     initializer(input_file);
+    int c;                                   // note: int, not char, required to handle EOF
+    while ((c = fgetc(file_pointer)) != EOF) // standard C I/O file reading loop
+        putchar(c);
 }
 
 // Opens the input file/stream for parsing and stores the file pointer to file_pointer.
-void initializer(char *input_file)
+int initializer(char *input_file)
 {
     file_pointer = fopen(input_file, "r");
     // check if file opening failed
