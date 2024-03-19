@@ -8,11 +8,15 @@ char *input_file;
 // FILE pointer to store the file pointer created by initializer function
 FILE *file_pointer;
 
+// varaible to store cuurent command
+char *current_command;
+
 int is_ok = EXIT_FAILURE;
 
 // function declerations
 int initializer(char *);
 bool hasMoreCommands();
+void advance();
 
 int main(int arg, char *vargs[])
 {
@@ -25,9 +29,8 @@ int main(int arg, char *vargs[])
     // checking by printing the content of the input file
     while (hasMoreCommands() == true)
     {
-        char buf[100] = {0};
-        fgets(buf, sizeof buf, file_pointer);
-        printf("%s", buf);
+        advance();
+        printf("%s", current_command);
     }
 }
 
@@ -52,4 +55,13 @@ bool hasMoreCommands()
 
     // returns false value if end of file has been reached else returns ture
     return ture_false;
+}
+
+// Reads the next command from the input and makes it the current command.
+void advance()
+{
+    // stores the current command to current_command
+    char buf[100] = {0};
+    fgets(buf, sizeof buf, file_pointer);
+    current_command = buf;
 }
