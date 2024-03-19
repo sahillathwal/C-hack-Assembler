@@ -22,6 +22,7 @@ int initializer(char *);
 bool hasMoreCommands();
 void advance();
 char *commandType();
+char *symbol();
 
 int main(int arg, char *vargs[])
 {
@@ -34,9 +35,16 @@ int main(int arg, char *vargs[])
     // checking by printing the content of the input file
     while (hasMoreCommands() == true)
     {
+        // reads the next command from the input and makes it the current command
         advance();
+
+        // prints the current command
         printf("%s", current_command);
+
+        // stores the type of the current command to command_type
         command_type = commandType();
+
+        // prints the type of the current command
         if (command_type != NULL)
         {
             printf("Command type: %s\n", command_type);
@@ -44,6 +52,12 @@ int main(int arg, char *vargs[])
         else
         {
             printf("Invalid command\n");
+        }
+
+        // prints the symbol of the current command
+        if (command_type && strcmp(command_type, "A_COMMAND") == 0 || command_type && strcmp(command_type, "L_COMMAND") == 0)
+        {
+            printf("Symbol: %s\n", symbol());
         }
     }
 }
@@ -94,9 +108,33 @@ char *commandType()
         return "C_COMMAND";
     }
     // Check if the current command is an L_COMMAND
-    else if (current_command[0] == '(' && current_command[strlen(current_command) - 2] == ')')
+    else if (current_command[0] == '(' && current_command[strlen(current_command) - 3] == ')') // change 3 to 2 for linux
     {
         return "L_COMMAND";
+    }
+    // If none of the above, return NULL
+    else
+    {
+        return NULL;
+    }
+}
+
+// Returns the symbol or decimal Xxx of the current command @Xxx or (Xxx).
+// Should be called only when commandType() is A_COMMAND or L_COMMAND.
+char *symbol()
+{
+    // Check if the current command is an A_COMMAND
+    if (command_type && strcmp(command_type, "A_COMMAND") == 0)
+    {
+        // Skip the '@' symbol and return the remaining string
+        return current_command + 1;
+    }
+    // Check if the current command is an L_COMMAND
+    else if (command_type && strcmp(command_type, "L_COMMAND") == 0)
+    {
+        // Skip the '(' and ')' symbol from the current command and return the remaining string
+        current_command[strlen(current_command) - 3] = '\0';
+        return current_command + 1;
     }
     // If none of the above, return NULL
     else
