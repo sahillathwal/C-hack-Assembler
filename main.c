@@ -24,6 +24,7 @@ void advance();
 char *commandType();
 char *symbol();
 char *dest();
+char *comp();
 
 int main(int arg, char *vargs[])
 {
@@ -65,6 +66,12 @@ int main(int arg, char *vargs[])
         if (command_type && strcmp(command_type, "C_COMMAND") == 0)
         {
             printf("Destination: %s\n", dest());
+        }
+
+        // prints the comp of the current command
+        if (command_type && strcmp(command_type, "C_COMMAND") == 0)
+        {
+            printf("Comp: %s\n", comp());
         }
     }
 }
@@ -181,6 +188,76 @@ char *dest()
         return destination;
     }
     // If '=' is not found, return NULL
+    else
+    {
+        return NULL;
+    }
+}
+
+/*
+Returns the comp mnemonic in the current C-command (28 possibilities).
+Should be called only when commandType() is C_COMMAND.
+*/
+char *comp()
+{
+    // Find the position of the '=' character
+    char *equal_sign = strchr(current_command, '=');
+
+    // Find the position of the ';' character
+    char *semicolon = strchr(current_command, ';');
+
+    // If both '=' and ';' are found, extract the comp mnemonic
+    if (equal_sign != NULL && semicolon != NULL)
+    {
+        // Calculate the length of the comp mnemonic
+        int length = semicolon - equal_sign - 1;
+
+        // Create a new string to store the comp mnemonic
+        char *comp_mnemonic = malloc((length + 1) * sizeof(char));
+
+        // Copy the comp mnemonic from the current command
+        strncpy(comp_mnemonic, equal_sign + 1, length);
+
+        // Null-terminate the comp mnemonic string
+        comp_mnemonic[length] = '\0';
+
+        return comp_mnemonic;
+    }
+    // If only '=' is found, extract the comp mnemonic
+    else if (equal_sign != NULL)
+    {
+        // Calculate the length of the comp mnemonic
+        int length = strlen(current_command) - (equal_sign - current_command) - 1;
+
+        // Create a new string to store the comp mnemonic
+        char *comp_mnemonic = malloc((length + 1) * sizeof(char));
+
+        // Copy the comp mnemonic from the current command
+        strncpy(comp_mnemonic, equal_sign + 1, length);
+
+        // Null-terminate the comp mnemonic string
+        comp_mnemonic[length] = '\0';
+
+        return comp_mnemonic;
+    }
+    // If only ';' is found, extract the comp mnemonic
+    else if (semicolon != NULL)
+    {
+        // Calculate the length of the comp mnemonic
+        int length = semicolon - current_command;
+
+        // Create a new string to store the comp mnemonic
+        char *comp_mnemonic = malloc((length + 1) * sizeof(char));
+
+        // Copy the comp mnemonic from the current command
+        strncpy(comp_mnemonic, current_command, length);
+
+        // Null-terminate the comp mnemonic string
+        comp_mnemonic[length] = '\0';
+
+        return comp_mnemonic;
+    }
+    // If neither '=' nor ';' is found, return NULL
     else
     {
         return NULL;
