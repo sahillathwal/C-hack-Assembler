@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 // varabile to store the file arrgument provided by user
 char *input_file;
@@ -11,12 +12,16 @@ FILE *file_pointer;
 // varaible to store cuurent command
 char *current_command;
 
+// varaible to store command type
+char *command_type;
+
 int is_ok = EXIT_FAILURE;
 
 // function declerations
 int initializer(char *);
 bool hasMoreCommands();
 void advance();
+char *commandType();
 
 int main(int arg, char *vargs[])
 {
@@ -31,6 +36,15 @@ int main(int arg, char *vargs[])
     {
         advance();
         printf("%s", current_command);
+        command_type = commandType();
+        if (command_type != NULL)
+        {
+            printf("Command type: %s\n", command_type);
+        }
+        else
+        {
+            printf("Invalid command\n");
+        }
     }
 }
 
@@ -64,4 +78,29 @@ void advance()
     char buf[100] = {0};
     fgets(buf, sizeof buf, file_pointer);
     current_command = buf;
+}
+
+// Returns the type of the current command.
+char *commandType()
+{
+    // Check if the current command is an A_COMMAND
+    if (current_command[0] == '@')
+    {
+        return "A_COMMAND";
+    }
+    // Check if the current command is a C_COMMAND
+    else if (strchr(current_command, '=') || strchr(current_command, ';'))
+    {
+        return "C_COMMAND";
+    }
+    // Check if the current command is an L_COMMAND
+    else if (current_command[0] == '(' && current_command[strlen(current_command) - 2] == ')')
+    {
+        return "L_COMMAND";
+    }
+    // If none of the above, return NULL
+    else
+    {
+        return NULL;
+    }
 }
