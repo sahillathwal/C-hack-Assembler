@@ -25,6 +25,7 @@ char *commandType();
 char *symbol();
 char *dest();
 char *comp();
+char *jump();
 
 int main(int arg, char *vargs[])
 {
@@ -35,10 +36,18 @@ int main(int arg, char *vargs[])
     initializer(input_file);
 
     // checking by printing the content of the input file
-    while (hasMoreCommands() == true)
+    do
     {
         // reads the next command from the input and makes it the current command
         advance();
+
+        // if current_commmand is empty line then skip the current iteration
+        if (current_command[0] == '\r' || current_command[0] == '\n' || current_command[0] == '\0')
+        {
+            continue;
+        }
+
+        printf("\n");
 
         // prints the current command
         printf("%s", current_command);
@@ -59,7 +68,7 @@ int main(int arg, char *vargs[])
         // prints the symbol of the current command
         if (command_type && strcmp(command_type, "A_COMMAND") == 0 || command_type && strcmp(command_type, "L_COMMAND") == 0)
         {
-            printf("Symbol: %s\n", symbol());
+            printf("Symbol: %s", symbol());
         }
 
         // prints the destination of the current command
@@ -73,7 +82,12 @@ int main(int arg, char *vargs[])
         {
             printf("Comp: %s\n", comp());
         }
-    }
+        // prints the jump of the current command
+        if (command_type && strcmp(command_type, "C_COMMAND") == 0)
+        {
+            printf("Jump: %s\n", jump());
+        }
+    } while (hasMoreCommands() == true);
 }
 
 // Opens the input file/stream for parsing and stores the file pointer to file_pointer.
@@ -227,7 +241,7 @@ char *comp()
     else if (equal_sign != NULL)
     {
         // Calculate the length of the comp mnemonic
-        int length = strlen(current_command) - (equal_sign - current_command) - 1;
+        int length = strlen(current_command) - (equal_sign - current_command) - 2;
 
         // Create a new string to store the comp mnemonic
         char *comp_mnemonic = malloc((length + 1) * sizeof(char));
@@ -258,6 +272,39 @@ char *comp()
         return comp_mnemonic;
     }
     // If neither '=' nor ';' is found, return NULL
+    else
+    {
+        return NULL;
+    }
+}
+
+/*
+Returns the jump mnemonic in the current C-command (8 possibilities).
+Should be called only when commandType() is C_COMMAND.
+*/
+char *jump()
+{
+    // Find the position of the ';' character
+    char *semicolon = strchr(current_command, ';');
+
+    // If ';' is found, extract the jump mnemonic
+    if (semicolon != NULL)
+    {
+        // Calculate the length of the jump mnemonic
+        int length = strlen(current_command) - (semicolon - current_command) - 1;
+
+        // Create a new string to store the jump mnemonic
+        char *jump_mnemonic = malloc((length + 1) * sizeof(char));
+
+        // Copy the jump mnemonic from the current command
+        strncpy(jump_mnemonic, semicolon + 1, length - 1);
+
+        // Null-terminate the jump mnemonic string
+        jump_mnemonic[length] = '\0';
+
+        return jump_mnemonic;
+    }
+    // If ';' is not found, return NULL
     else
     {
         return NULL;
