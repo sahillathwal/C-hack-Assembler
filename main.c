@@ -23,6 +23,7 @@ bool hasMoreCommands();
 void advance();
 char *commandType();
 char *symbol();
+char *dest();
 
 int main(int arg, char *vargs[])
 {
@@ -59,6 +60,12 @@ int main(int arg, char *vargs[])
         {
             printf("Symbol: %s\n", symbol());
         }
+
+        // prints the destination of the current command
+        if (command_type && strcmp(command_type, "C_COMMAND") == 0)
+        {
+            printf("Destination: %s\n", dest());
+        }
     }
 }
 
@@ -90,8 +97,10 @@ void advance()
 {
     // stores the current command to current_command
     char buf[100] = {0};
-    fgets(buf, sizeof buf, file_pointer);
-    current_command = buf;
+    if (fgets(buf, sizeof buf, file_pointer) != NULL)
+    {
+        current_command = strdup(buf);
+    }
 }
 
 // Returns the type of the current command.
@@ -119,8 +128,10 @@ char *commandType()
     }
 }
 
-// Returns the symbol or decimal Xxx of the current command @Xxx or (Xxx).
-// Should be called only when commandType() is A_COMMAND or L_COMMAND.
+/*
+Returns the symbol or decimal Xxx of the current command @Xxx or (Xxx).
+Should be called only when commandType() is A_COMMAND or L_COMMAND.
+*/
 char *symbol()
 {
     // Check if the current command is an A_COMMAND
@@ -137,6 +148,39 @@ char *symbol()
         return current_command + 1;
     }
     // If none of the above, return NULL
+    else
+    {
+        return NULL;
+    }
+}
+
+/*
+Returns the dest mnemonic in the current C-command (8 possibilities).
+Should be called only when commandType() is C_COMMAND.
+*/
+char *dest()
+{
+    // Find the position of the '=' character
+    char *equal_sign = strchr(current_command, '=');
+
+    // If '=' is found, extract the destination mnemonic
+    if (equal_sign != NULL)
+    {
+        // Calculate the length of the destination mnemonic
+        int length = equal_sign - current_command;
+
+        // Create a new string to store the destination mnemonic
+        char *destination = malloc((length + 1) * sizeof(char));
+
+        // Copy the destination mnemonic from the current command
+        strncpy(destination, current_command, length);
+
+        // Null-terminate the destination string
+        destination[length] = '\0';
+
+        return destination;
+    }
+    // If '=' is not found, return NULL
     else
     {
         return NULL;
