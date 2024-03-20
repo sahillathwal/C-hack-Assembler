@@ -18,14 +18,14 @@ char *command_type;
 int is_ok = EXIT_FAILURE;
 
 // function declerations
-int initializer(char *);
-bool hasMoreCommands();
-void advance();
-char *commandType();
-char *symbol();
-char *dest();
-char *comp();
-char *jump();
+int initializerParser(char *);
+bool hasMoreCommandsParser();
+void advanceParser();
+char *commandTypeParser();
+char *symbolParser();
+char *destParser();
+char *compParser();
+char *jumpParser();
 
 int main(int arg, char *vargs[])
 {
@@ -33,13 +33,13 @@ int main(int arg, char *vargs[])
     input_file = vargs[1];
 
     // calling initializer function to open the file for parsing
-    initializer(input_file);
+    initializerParser(input_file);
 
     // checking by printing the content of the input file
     do
     {
         // reads the next command from the input and makes it the current command
-        advance();
+        advanceParser();
 
         // if current_commmand is empty line then skip the current iteration
         if (current_command[0] == '\r' || current_command[0] == '\n' || current_command[0] == '\0')
@@ -53,7 +53,7 @@ int main(int arg, char *vargs[])
         printf("%s", current_command);
 
         // stores the type of the current command to command_type
-        command_type = commandType();
+        command_type = commandTypeParser();
 
         // prints the type of the current command
         if (command_type != NULL)
@@ -68,30 +68,30 @@ int main(int arg, char *vargs[])
         // prints the symbol of the current command
         if (command_type && strcmp(command_type, "A_COMMAND") == 0 || command_type && strcmp(command_type, "L_COMMAND") == 0)
         {
-            printf("Symbol: %s", symbol());
+            printf("Symbol: %s", symbolParser());
         }
 
         // prints the destination of the current command
         if (command_type && strcmp(command_type, "C_COMMAND") == 0)
         {
-            printf("Destination: %s\n", dest());
+            printf("Destination: %s\n", destParser());
         }
 
         // prints the comp of the current command
         if (command_type && strcmp(command_type, "C_COMMAND") == 0)
         {
-            printf("Comp: %s\n", comp());
+            printf("Comp: %s\n", compParser());
         }
         // prints the jump of the current command
         if (command_type && strcmp(command_type, "C_COMMAND") == 0)
         {
-            printf("Jump: %s\n", jump());
+            printf("Jump: %s\n", jumpParser());
         }
-    } while (hasMoreCommands() == true);
+    } while (hasMoreCommandsParser() == true);
 }
 
 // Opens the input file/stream for parsing and stores the file pointer to file_pointer.
-int initializer(char *input_file)
+int initializerParser(char *input_file)
 {
     file_pointer = fopen(input_file, "r");
 
@@ -104,7 +104,7 @@ int initializer(char *input_file)
 }
 
 // function to check if there are more commands left in the input file
-bool hasMoreCommands()
+bool hasMoreCommandsParser()
 {
     // if the end of the stream has not been reached feof returns zero; hence ture_false gets assgined false
     bool ture_false = (feof(file_pointer) == 0) ? true : false;
@@ -114,7 +114,7 @@ bool hasMoreCommands()
 }
 
 // Reads the next command from the input and makes it the current command.
-void advance()
+void advanceParser()
 {
     // stores the current command to current_command
     char buf[100] = {0};
@@ -125,7 +125,7 @@ void advance()
 }
 
 // Returns the type of the current command.
-char *commandType()
+char *commandTypeParser()
 {
     // Check if the current command is an A_COMMAND
     if (current_command[0] == '@')
@@ -153,7 +153,7 @@ char *commandType()
 Returns the symbol or decimal Xxx of the current command @Xxx or (Xxx).
 Should be called only when commandType() is A_COMMAND or L_COMMAND.
 */
-char *symbol()
+char *symbolParser()
 {
     // Check if the current command is an A_COMMAND
     if (command_type && strcmp(command_type, "A_COMMAND") == 0)
@@ -179,7 +179,7 @@ char *symbol()
 Returns the dest mnemonic in the current C-command (8 possibilities).
 Should be called only when commandType() is C_COMMAND.
 */
-char *dest()
+char *destParser()
 {
     // Find the position of the '=' character
     char *equal_sign = strchr(current_command, '=');
@@ -212,7 +212,7 @@ char *dest()
 Returns the comp mnemonic in the current C-command (28 possibilities).
 Should be called only when commandType() is C_COMMAND.
 */
-char *comp()
+char *compParser()
 {
     // Find the position of the '=' character
     char *equal_sign = strchr(current_command, '=');
@@ -282,7 +282,7 @@ char *comp()
 Returns the jump mnemonic in the current C-command (8 possibilities).
 Should be called only when commandType() is C_COMMAND.
 */
-char *jump()
+char *jumpParser()
 {
     // Find the position of the ';' character
     char *semicolon = strchr(current_command, ';');
