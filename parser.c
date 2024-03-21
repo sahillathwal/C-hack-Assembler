@@ -1,5 +1,4 @@
 #include "parser.h"
-#include <stdio.h>
 #include <string.h>
 
 // Opens the input file/stream for parsing and stores the file pointer to file_pointer.
