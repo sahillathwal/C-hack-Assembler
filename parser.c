@@ -1,5 +1,15 @@
 #include "parser.h"
 
+// parser.c
+
+extern char *input_file;
+extern FILE *file_pointer;
+extern char *current_command;
+extern char *command_type;
+extern int is_ok;
+
+// Rest of your code...
+
 // Opens the input file/stream for parsing and stores the file pointer to file_pointer.
 int initializerParser(char *input_file)
 {
