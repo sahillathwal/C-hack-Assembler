@@ -1,21 +1,6 @@
 #include "parser.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-
-// varabile to store the file arrgument provided by user
-char *input_file;
-
-// FILE pointer to store the file pointer created by initializer function
-FILE *file_pointer;
-
-// varaible to store cuurent command
-char *current_command;
-
-// varaible to store command type
-char *command_type;
-
-int is_ok = EXIT_FAILURE;
 
 // Opens the input file/stream for parsing and stores the file pointer to file_pointer.
 int initializerParser(char *input_file)
