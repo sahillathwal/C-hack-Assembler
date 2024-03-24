@@ -32,11 +32,21 @@ bool hasMoreCommandsParser()
 // Reads the next command from the input and makes it the current command.
 void advanceParser()
 {
-    // stores the current command to current_command
     char buf[100] = {0};
-    if (fgets(buf, sizeof buf, file_pointer) != NULL)
+    while (fgets(buf, sizeof buf, file_pointer) != NULL)
     {
-        current_command = strdup(buf);
+        // Check if the line is not empty
+        if (strlen(buf) > 1)
+        {
+            // If the line is not empty, update current_command and break the loop
+            current_command = strdup(buf);
+            break;
+        }
+    }
+    // If the end of the file has been reached, set current_command to NULL
+    if (feof(file_pointer))
+    {
+        current_command = NULL;
     }
 }
 
