@@ -5,6 +5,9 @@
 
 #include <stdlib.h>
 #include <string.h>
+
+extern int TABLE_SIZE;
+
 // Define a structure for the hash table entry
 typedef struct
 {
