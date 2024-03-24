@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+// Define the size of the hash table in main.c
 extern int TABLE_SIZE;
 
 // Define a structure for the hash table entry
