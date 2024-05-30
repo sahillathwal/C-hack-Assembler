@@ -252,6 +252,9 @@ char *jumpParser()
         // Null-terminate the jump mnemonic string
         jump_mnemonic[length] = '\0';
 
+        // Trim unwanted characters
+        trimUnwantedChars(jump_mnemonic);
+
         return jump_mnemonic;
     }
     // If ';' is not found, return NULL
