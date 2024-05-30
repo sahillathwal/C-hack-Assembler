@@ -79,6 +79,13 @@ void createCodeTables()
 
 char *destCode(char *dest)
 {
+    // Check if dest is NULL
+    if (dest == NULL)
+    {
+        // If dest is NULL, return the default value
+        return "000";
+    }
+
     // returns the binary code of the dest mnemonic
     char *result = get(ht_dest, dest);
     if (result == NULL)
@@ -91,6 +98,13 @@ char *destCode(char *dest)
 
 char *compCode(char *comp)
 {
+    // Check if comp is NULL
+    if (comp == NULL)
+    {
+        // If comp is NULL, return the default value
+        return "0000000";
+    }
+
     // returns the binary code of the comp mnemonic
     char *result = get(ht_comp, comp);
     if (result == NULL)
@@ -103,8 +117,20 @@ char *compCode(char *comp)
 
 char *jumpCode(char *jump)
 {
+    // Check if jump is NULL
+    if (jump == NULL)
+    {
+        // If jump is NULL, return the default value
+        return "000";
+    }
+
     // returns the binary code of the jump mnemonic
-    return get(ht_jump, jump);
+    char *result = get(ht_jump, jump);
+    if (result == NULL)
+    {
+        // return a default value or handle the error appropriately
+        return "000";
+    }
 }
 
 // void testDestCode()
