@@ -88,7 +88,8 @@ int main(int arg, char *vargs[])
         // calling jumpCode function to get the binary code of the jump
         if (command_type && strcmp(command_type, "C_COMMAND") == 0)
         {
-            // printf("Jump code: %s\n", jumpCode(jumpParser()));
+            char *jump = jumpParser();
+            printf("Jump code: %s\n", jumpCode(jump));
         }
     } while (hasMoreCommandsParser() == true);
 }
