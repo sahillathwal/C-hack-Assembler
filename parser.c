@@ -38,8 +38,21 @@ void advanceParser()
         // Check if the line is not empty
         if (strlen(buf) > 1)
         {
-            // If the line is not empty, update current_command and break the loop
+            if (buf[0] == '\r' || buf[0] == '\n' || buf[0] == '\0')
+            {
+                continue;
+            }
+
+            //  If the line is not empty, update current_command and break the loop
             current_command = strdup(buf);
+
+            // trim current_command from // to the end of file
+            char *comment = strchr(current_command, '/');
+            if (comment != NULL)
+            {
+                *comment = '\0';
+            }
+
             break;
         }
     }
@@ -64,7 +77,7 @@ char *commandTypeParser()
         return "C_COMMAND";
     }
     // Check if the current command is an L_COMMAND
-    else if (current_command[0] == '(' && current_command[strlen(current_command) - 3] == ')') // change 3 to 2 for linux
+    else if (current_command[0] == '(') // change 3 to 2 for linux
     {
         return "L_COMMAND";
     }
@@ -91,7 +104,7 @@ char *symbolParser()
     else if (command_type && strcmp(command_type, "L_COMMAND") == 0)
     {
         // Skip the '(' and ')' symbol from the current command and return the remaining string
-        current_command[strlen(current_command) - 3] = '\0';
+        current_command[strlen(current_command) - 2] = '\0';
         return current_command + 1;
     }
     // If none of the above, return NULL
