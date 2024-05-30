@@ -134,6 +134,21 @@ char *destParser()
     }
 }
 
+// Function to trim unwanted characters
+void trimUnwantedChars(char *str)
+{
+    char *p = str;
+    while (*p != '\0')
+    {
+        if (*p == '\r' || *p == '\n')
+        {
+            *p = '\0';
+            break;
+        }
+        p++;
+    }
+}
+
 /*
 Returns the comp mnemonic in the current C-command (28 possibilities).
 Should be called only when commandType() is C_COMMAND.
@@ -161,6 +176,9 @@ char *compParser()
         // Null-terminate the comp mnemonic string
         comp_mnemonic[length] = '\0';
 
+        // Trim unwanted characters
+        trimUnwantedChars(comp_mnemonic);
+
         return comp_mnemonic;
     }
     // If only '=' is found, extract the comp mnemonic
@@ -178,6 +196,9 @@ char *compParser()
         // Null-terminate the comp mnemonic string
         comp_mnemonic[length] = '\0';
 
+        // Trim unwanted characters
+        trimUnwantedChars(comp_mnemonic);
+
         return comp_mnemonic;
     }
     // If only ';' is found, extract the comp mnemonic
@@ -194,6 +215,9 @@ char *compParser()
 
         // Null-terminate the comp mnemonic string
         comp_mnemonic[length] = '\0';
+
+        // Trim unwanted characters
+        trimUnwantedChars(comp_mnemonic);
 
         return comp_mnemonic;
     }
