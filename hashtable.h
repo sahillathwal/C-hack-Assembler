@@ -25,5 +25,8 @@ typedef struct
 HashTable *createHashTable(int size);
 void insert(HashTable *hashTable, const char *key, char *value);
 char *get(HashTable *hashTable, const char *key);
+void freeHashTable(HashTable *hashTable);
+
+void printSortedHashTable(HashTable *hashTable);
 
 #endif // HASHTABLE_H
