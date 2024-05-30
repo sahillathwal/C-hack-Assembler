@@ -1,10 +1,6 @@
 #include "parser.h"
-#include "hashtable.h"
-
-HashTable *ht;
-#define TABLE_SIZE 10
-
-char *destCode(char *dest);
+// #include "hashtable.h"
+#include "code.h"
 
 int main(int arg, char *vargs[])
 {
@@ -14,21 +10,14 @@ int main(int arg, char *vargs[])
     //     printf("No input file specified.\n");
     //     return 1;
     // }
-    // creates a hash table
-    ht = createHashTable();
-    // inserts the key value pairs into the hash table
-    insert(ht, "null", "000");
-    insert(ht, "M", "001");
-    insert(ht, "D", "010");
-    insert(ht, "MD", "011");
-    insert(ht, "A", "100");
-    insert(ht, "AM", "101");
-    insert(ht, "AD", "110");
-    insert(ht, "AMD", "111");
 
     // stores input file arrgumnet to input_file
 
     input_file = "Add.asm";
+
+    // calling createCodeTables function to create the hash tables
+    createCodeTables();
+
     // calling initializer function to open the file for parsing
     initializerParser(input_file);
 
@@ -87,18 +76,19 @@ int main(int arg, char *vargs[])
         // calling destCode function to get the binary code of the destination
         if (command_type && strcmp(command_type, "C_COMMAND") == 0)
         {
-            printf("Destination code: %s\n", destCode(destParser()));
+            char *dest = destParser();
+            printf("Dest code: %s\n", destCode(dest));
+        }
+        // calling compCode function to get the binary code of the comp
+        if (command_type && strcmp(command_type, "C_COMMAND") == 0)
+        {
+            char *comp = compParser();
+            printf("Comp code: %s\n", compCode(comp));
+        }
+        // calling jumpCode function to get the binary code of the jump
+        if (command_type && strcmp(command_type, "C_COMMAND") == 0)
+        {
+            // printf("Jump code: %s\n", jumpCode(jumpParser()));
         }
     } while (hasMoreCommandsParser() == true);
-}
-
-char *destCode(char *dest)
-{
-    char *bits = get(ht, dest);
-    if (bits == NULL)
-    {
-        printf("Key not found: %s\n", dest);
-        return NULL;
-    }
-    return strdup(bits);
 }
