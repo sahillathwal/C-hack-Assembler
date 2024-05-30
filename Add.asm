@@ -11,3 +11,9 @@ D=A
 D=D+A
 @0
 M=D
+D=D
+MD=D
+A=D
+AM=D
+AD=D
+AMD=D
