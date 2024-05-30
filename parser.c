@@ -38,8 +38,53 @@ void advanceParser()
         // Check if the line is not empty
         if (strlen(buf) > 1)
         {
-            // If the line is not empty, update current_command and break the loop
+            if (buf[0] == '\r' || buf[0] == '\n' || buf[0] == '\0')
+            {
+                continue;
+            }
+
+            //  If the line is not empty, update current_command and break the loop
             current_command = strdup(buf);
+
+            // trim current_command from // to the end of file
+            char *comment = strchr(current_command, '/');
+            if (comment != NULL)
+            {
+                *comment = '\0';
+            }
+
+            // remove special characters
+            for (int i = 0; i < strlen(current_command); i++)
+            {
+                if (current_command[i] == '\r' || current_command[i] == '\n')
+                {
+                    current_command[i] = '\0';
+                }
+            }
+            // remove trailing white spaces
+            for (int i = strlen(current_command) - 1; i >= 0; i--)
+            {
+                if (current_command[i] == ' ')
+                {
+                    current_command[i] = '\0';
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            // remove leading white spaces
+            int start = 0;
+            while (current_command[start] == ' ')
+            {
+                start++;
+            }
+            if (start > 0)
+            {
+                memmove(current_command, current_command + start, strlen(current_command) - start + 1);
+            }
+
             break;
         }
     }
@@ -64,7 +109,7 @@ char *commandTypeParser()
         return "C_COMMAND";
     }
     // Check if the current command is an L_COMMAND
-    else if (current_command[0] == '(' && current_command[strlen(current_command) - 3] == ')') // change 3 to 2 for linux
+    else if (current_command[0] == '(' && current_command[strlen(current_command) - 1] == ')')
     {
         return "L_COMMAND";
     }
@@ -91,7 +136,7 @@ char *symbolParser()
     else if (command_type && strcmp(command_type, "L_COMMAND") == 0)
     {
         // Skip the '(' and ')' symbol from the current command and return the remaining string
-        current_command[strlen(current_command) - 3] = '\0';
+        current_command[strlen(current_command) - 1] = '\0';
         return current_command + 1;
     }
     // If none of the above, return NULL
@@ -134,21 +179,6 @@ char *destParser()
     }
 }
 
-// Function to trim unwanted characters
-void trimUnwantedChars(char *str)
-{
-    char *p = str;
-    while (*p != '\0')
-    {
-        if (*p == '\r' || *p == '\n')
-        {
-            *p = '\0';
-            break;
-        }
-        p++;
-    }
-}
-
 /*
 Returns the comp mnemonic in the current C-command (28 possibilities).
 Should be called only when commandType() is C_COMMAND.
@@ -176,16 +206,13 @@ char *compParser()
         // Null-terminate the comp mnemonic string
         comp_mnemonic[length] = '\0';
 
-        // Trim unwanted characters
-        trimUnwantedChars(comp_mnemonic);
-
         return comp_mnemonic;
     }
     // If only '=' is found, extract the comp mnemonic
     else if (equal_sign != NULL)
     {
         // Calculate the length of the comp mnemonic
-        int length = strlen(current_command) - (equal_sign - current_command) - 2;
+        int length = strlen(current_command) - (equal_sign - current_command) - 1;
 
         // Create a new string to store the comp mnemonic
         char *comp_mnemonic = malloc((length + 1) * sizeof(char));
@@ -195,9 +222,6 @@ char *compParser()
 
         // Null-terminate the comp mnemonic string
         comp_mnemonic[length] = '\0';
-
-        // Trim unwanted characters
-        trimUnwantedChars(comp_mnemonic);
 
         return comp_mnemonic;
     }
@@ -216,8 +240,7 @@ char *compParser()
         // Null-terminate the comp mnemonic string
         comp_mnemonic[length] = '\0';
 
-        // Trim unwanted characters
-        trimUnwantedChars(comp_mnemonic);
+        // trimUnwantedChars(comp_mnemonic);
 
         return comp_mnemonic;
     }
@@ -241,7 +264,7 @@ char *jumpParser()
     if (semicolon != NULL)
     {
         // Calculate the length of the jump mnemonic
-        int length = strlen(current_command) - (semicolon - current_command) - 1;
+        int length = strlen(current_command) - (semicolon - current_command);
 
         // Create a new string to store the jump mnemonic
         char *jump_mnemonic = malloc((length + 1) * sizeof(char));
@@ -251,9 +274,6 @@ char *jumpParser()
 
         // Null-terminate the jump mnemonic string
         jump_mnemonic[length] = '\0';
-
-        // Trim unwanted characters
-        trimUnwantedChars(jump_mnemonic);
 
         return jump_mnemonic;
     }

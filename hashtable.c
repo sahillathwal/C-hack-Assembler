@@ -1,4 +1,64 @@
 #include "hashtable.h"
+#include <stdio.h>
+
+// #include <stdlib.h>
+// #include <string.h>
+
+typedef struct EntryList
+{
+    HashEntry *entry;
+    struct EntryList *next;
+} EntryList;
+
+EntryList *sortedInsert(EntryList *head, HashEntry *new_entry)
+{
+    EntryList *new_node = (EntryList *)malloc(sizeof(EntryList));
+    new_node->entry = new_entry;
+
+    if (head == NULL || atoi(head->entry->value) >= atoi(new_node->entry->value))
+    {
+        new_node->next = head;
+        head = new_node;
+    }
+    else
+    {
+        EntryList *current = head;
+        while (current->next != NULL && atoi(current->next->entry->value) < atoi(new_node->entry->value))
+        {
+            current = current->next;
+        }
+        new_node->next = current->next;
+        current->next = new_node;
+    }
+    return head;
+}
+
+void printList(EntryList *head)
+{
+    EntryList *temp = head;
+    while (temp != NULL)
+    {
+        printf("Key: %s, Value: %s\n", temp->entry->key, temp->entry->value);
+        temp = temp->next;
+    }
+}
+
+void printSortedHashTable(HashTable *hashTable)
+{
+    EntryList *head = NULL;
+
+    for (int i = 0; i < hashTable->size; i++)
+    {
+        HashEntry *entry = hashTable->entries[i];
+        while (entry != NULL)
+        {
+            head = sortedInsert(head, entry);
+            entry = entry->next;
+        }
+    }
+
+    printList(head);
+}
 
 // Function to calculate the hash of a key
 int hash(HashTable *hashTable, const char *key)
@@ -71,4 +131,23 @@ char *get(HashTable *hashTable, const char *key)
 
     // If no matching key is found, return NULL
     return NULL;
+}
+
+// Function to free the memory allocated for the hash table
+void freeHashTable(HashTable *hashTable)
+{
+    for (int i = 0; i < hashTable->size; i++)
+    {
+        HashEntry *entry = hashTable->entries[i];
+        while (entry != NULL)
+        {
+            HashEntry *temp = entry;
+            entry = entry->next;
+            free(temp->key);
+            free(temp->value);
+            free(temp);
+        }
+    }
+    free(hashTable->entries);
+    free(hashTable);
 }
